@@ -2,6 +2,7 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { CreateVehicleRestrictionDto } from './dto/create-vehicle-restriction.dto';
 import { UpdateVehicleRestrictionDto } from './dto/update-vehicle-restriction.dto';
 import { VehicleRestrictionRecord } from './interfaces/vehicle-restriction-record.interface.ts';
+import { DAY_NAMES, RESTRICTED_DIGITS_BY_DAY } from './constants/pico-y-placa.constants';
 
 @Injectable()
 export class VehicleRestrictionService {
@@ -42,29 +43,12 @@ export class VehicleRestrictionService {
   }
 
   private canCirculateVehicle(createVehicleRestrictionDto) {
-    const RESTRICTED_DIGITS_BY_DAY: Record<string, number[]> = {
-      MONDAY: [1, 2],
-      TUESDAY: [3, 4],
-      WEDNESDAY: [5, 6],
-      THURSDAY: [7, 8],
-      FRIDAY: [9, 0]
-    };
-
-    const DAY_MAP = [
-      'SUNDAY',
-      'MONDAY',
-      'TUESDAY',
-      'WEDNESDAY',
-      'THURSDAY',
-      'FRIDAY',
-      'SATURDAY',
-    ];
 
     const lastDigit = createVehicleRestrictionDto.licensePlate.slice(-1);
     const lastDigitAsNumber = this.convertStringToInteger(lastDigit);
 
     const date = this.convertStringToDate(createVehicleRestrictionDto.date);
-    const currentDay = DAY_MAP[date.getDay()];
+    const currentDay = DAY_NAMES[date.getDay()];
 
     const restrictedDigits = RESTRICTED_DIGITS_BY_DAY[currentDay];
 
