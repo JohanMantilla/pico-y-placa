@@ -5,7 +5,7 @@ import { DAY_NAMES, RESTRICTED_DIGITS_BY_DAY, RESTRICTED_HOURS } from "../consta
 @Injectable()
 export class PicoYPlacaRule {
 
-    canCirculateVehicle(createVehicleRestrictionDto: CreateVehicleRestrictionDto): boolean {
+    canCirculate(createVehicleRestrictionDto: CreateVehicleRestrictionDto): boolean {
         const isTimeRestrictedByDay = this.isPlateRestrictedOnDay(createVehicleRestrictionDto.licensePlate, createVehicleRestrictionDto.date)
         const isTimeRestrictedByHour = this.isTimeRestricted(createVehicleRestrictionDto.time);
         return !(isTimeRestrictedByDay && isTimeRestrictedByHour);
@@ -18,7 +18,7 @@ export class PicoYPlacaRule {
         return restrictedList.includes(lastDigit);
     }
 
-    private isTimeRestricted(time): boolean {
+    private isTimeRestricted(time: string): boolean {
         const [hour, minute] = time.split(":").map(Number);
         const totalMinutes = (hour * 60) + minute;
 

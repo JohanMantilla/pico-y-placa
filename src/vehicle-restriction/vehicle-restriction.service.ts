@@ -10,10 +10,9 @@ export class VehicleRestrictionService {
 
   constructor(private readonly picoYPlacaRule: PicoYPlacaRule) { }
 
-
   create(createVehicleRestrictionDto: CreateVehicleRestrictionDto): VehicleRestrictionRecord {
 
-    if (!this.picoYPlacaRule.canCirculateVehicle(createVehicleRestrictionDto)) {
+    if (!this.picoYPlacaRule.canCirculate(createVehicleRestrictionDto)) {
       throw new BadRequestException('El vehículo no puede circular debido a la restricción de pico y placa')
     }
 
