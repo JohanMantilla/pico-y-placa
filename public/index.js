@@ -40,7 +40,7 @@ document.getElementById('form').addEventListener('submit', async (event) => {
             );
         }
     } catch (error) {
-        console.log('Error capturado:', error); // ← agrega esto
+        console.log('Error capturado:', error); 
         loading.style.display = 'none';
         showResult('error', 'Error de conexión', 'Verifica que el backend esté corriendo.');
     }

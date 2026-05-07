@@ -9,7 +9,7 @@ import { join } from 'path';
   imports: [
     VehicleRestrictionModule,
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'public'), // dist/public ← correcto con tu nest-cli
+      rootPath: join(__dirname, '..', 'public'), 
     }),
   ],
   controllers: [AppController],
