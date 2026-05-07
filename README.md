@@ -6,85 +6,153 @@
 
 # Pico y Placa API
 
-This project is a simple backend solution built with **NestJS** to validate whether a vehicle can circulate under the **Pico y Placa** traffic restriction system used in Quito, Ecuador.
+## Overview
 
-A basic frontend form is included to test the API without relying only on Postman.
+This project is a backend solution built with **NestJS** to validate whether a vehicle can circulate under the **Pico y Placa** traffic restriction system used in Quito, Ecuador. A lightweight frontend interface is included to simplify API testing without relying only on Postman.
 
----
 
-## Pico y Placa Rules
+## Business Rules
 
-**Restricted plate digits by day:**
+### Restricted plate digits by day
 
-- Monday: 1, 2  
-- Tuesday: 3, 4  
-- Wednesday: 5, 6  
-- Thursday: 7, 8  
-- Friday: 9, 0  
+- Monday: 1, 2
+- Tuesday: 3, 4
+- Wednesday: 5, 6
+- Thursday: 7, 8
+- Friday: 9, 0
 
-**Restricted time ranges:**
+### Restricted time ranges
 
-- 07:00 – 09:30  
-- 16:00 – 19:30  
+- 07:00 – 09:30
+- 16:00 – 19:30
 
 Outside these hours, vehicles can circulate normally.
 
----
 
-## Project setup
+## Tech Stack
 
-1. Clone the repository
+- NestJS
+- TypeScript
+- Jest
+
+
+## Requirements
+
+- Node.js >= 18
+- npm >= 9
+
+
+
+## Installation
+
+### Clone the repository
 
 ```bash
 git clone https://github.com/JohanMantilla/pico-y-placa.git
-```
+cd pico-y-placa
+````
 
-2. Install dependencies
-```
+### Install dependencies
+
+```bash
 npm install
 ```
 
-3. Run the application
-```
+### Run the application
+
+```bash
 npm run start:dev
 ```
 
+
 ## Application URLs
-### Frontend (static form):
-```
+
+### Frontend (static form)
+
+```text
 http://localhost:3000
 ```
-### API endpoint:
-```
+
+### API Endpoint
+
+```text
 http://localhost:3000/api/v1/vehicle-restriction
 ```
 
-## API usage
+## API Usage
+
 ### Endpoint
-```
+
+```http
 POST /api/v1/vehicle-restriction
 ```
-### Example body
+
+### Example Request Body
+
+```json
+{
+  "licensePlate": "PBZ-4565",
+  "date": "2026-05-06",
+  "time": "06:30"
+}
 ```
-POST /api/v1/vehicle-restriction
+
+### Success Response Example
+
+```json
+{
+  "licensePlate": "PBZ-4565",
+  "date": "2026-05-06",
+  "time": "06:30"
+}
 ```
-If the vehicle cannot circulate, the API returns a 400 Bad Request response.
-If it can circulate, the request data is returned successfully.
+
+### Error Response Example
+
+```json
+{
+  "statusCode": 400,
+  "message": "El vehículo no puede circular debido a la restricción de pico y placa",
+  "error": "Bad Request"
+}
+```
+E
+If the vehicle cannot circulate, the API returns a `400 Bad Request` response.
+If the vehicle can circulate, the request is processed successfully.
+
 
 ## Tests
+
 Unit tests were implemented using Jest to validate the Pico y Placa business rules.
+
 The tests focus on the domain layer, covering scenarios such as:
 
 * Restricted days and times
 * Allowed time ranges
 
-To run the tests:
-```
+### Run tests
+
+```bash
 npm run test
 ```
 
+
+
+## Architecture
+
+The project follows a layered architecture using:
+
+* Controllers
+* DTO validation
+* Application services
+* Domain business rules
+
+This structure helps keep the code modular, maintainable, and easy to understand.
+
+
 ## Notes
 
-* The project uses in-memory storage.
-* No database is required.
-* The main goal of this solution is to correctly validate Pico y Placa rules and keep the code clear and easy to understand.
+* No database is required for this challenge.
+* The application uses in-memory logic only.
+* The main goal of this solution is to correctly validate Pico y Placa rules while maintaining clean and readable code.
+
