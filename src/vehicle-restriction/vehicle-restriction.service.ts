@@ -1,26 +1,107 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateVehicleRestrictionDto } from './dto/create-vehicle-restriction.dto';
 import { UpdateVehicleRestrictionDto } from './dto/update-vehicle-restriction.dto';
+import { VehicleRestrictionRecord } from './interfaces/vehicle-restriction-record.interface.ts';
 
 @Injectable()
 export class VehicleRestrictionService {
-  create(createVehicleRestrictionDto: CreateVehicleRestrictionDto) {
-    return 'This action adds a new vehicleRestriction';
+
+  private readonly records: VehicleRestrictionRecord[] = [];
+
+  create(createVehicleRestrictionDto: CreateVehicleRestrictionDto): VehicleRestrictionRecord {
+
+    const canCirculateVehicle = this.canCirculateVehicle(
+      createVehicleRestrictionDto
+    );
+
+    if (!canCirculateVehicle) {
+      throw new BadRequestException('El vehículo no puede circular debido a la restricción de pico y placa')
+    }
+
+    const record: VehicleRestrictionRecord = {
+      licensePlate: createVehicleRestrictionDto.licensePlate,
+      date: createVehicleRestrictionDto.date,
+      time: createVehicleRestrictionDto.time
+    }
+
+    this.records.push(record);
+    return record;
   }
 
-  findAll() {
-    return `This action returns all vehicleRestriction`;
+  findAll(): VehicleRestrictionRecord[] {
+    return this.records;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} vehicleRestriction`;
+  findOne(licensePlate: string): VehicleRestrictionRecord {
+    const record = this.records.find(record => record.licensePlate === licensePlate);
+
+    if (!record) {
+      throw new NotFoundException(`No se encontró ningún registro con la placa ${licensePlate}`);
+    }
+    return record;
   }
 
-  update(id: number, updateVehicleRestrictionDto: UpdateVehicleRestrictionDto) {
-    return `This action updates a #${id} vehicleRestriction`;
+  private canCirculateVehicle(createVehicleRestrictionDto) {
+    const RESTRICTED_DIGITS_BY_DAY: Record<string, number[]> = {
+      MONDAY: [1, 2],
+      TUESDAY: [3, 4],
+      WEDNESDAY: [5, 6],
+      THURSDAY: [7, 8],
+      FRIDAY: [9, 0]
+    };
+
+    const DAY_MAP = [
+      'SUNDAY',
+      'MONDAY',
+      'TUESDAY',
+      'WEDNESDAY',
+      'THURSDAY',
+      'FRIDAY',
+      'SATURDAY',
+    ];
+
+    const lastDigit = createVehicleRestrictionDto.licensePlate.slice(-1);
+    const lastDigitAsNumber = this.convertStringToInteger(lastDigit);
+
+    const date = this.convertStringToDate(createVehicleRestrictionDto.date);
+    const currentDay = DAY_MAP[date.getDay()];
+
+    const restrictedDigits = RESTRICTED_DIGITS_BY_DAY[currentDay];
+
+    // TODO: AQUI se valida la restriccion del día 
+    const isRestricted = restrictedDigits.includes(lastDigitAsNumber);
+    console.log(isRestricted);
+
+    const time = this.canCirculateVehicleByHour(createVehicleRestrictionDto.time);
+    console.log(time);
+
+    if (isRestricted && time) {
+      return false;
+    }
+
+    return true;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} vehicleRestriction`;
+  private convertStringToInteger(lastDigit) {
+    return parseInt(lastDigit);
   }
+
+  private convertStringToDate(date): Date {
+    return new Date(date + 'T00:00:00');
+  }
+
+  private canCirculateVehicleByHour(time): boolean {
+
+    const timeList = time.split(":");
+
+    const hour = this.convertStringToInteger(timeList[0]);
+    const minute = this.convertStringToInteger(timeList[1]);
+
+    const timeToMinutes = (hour * 60) + minute;
+    console.log(timeToMinutes);
+
+    return (timeToMinutes >= 420 && timeToMinutes <= 570) || (timeToMinutes >= 960 && timeToMinutes <= 1170);
+  }
+
+
 }

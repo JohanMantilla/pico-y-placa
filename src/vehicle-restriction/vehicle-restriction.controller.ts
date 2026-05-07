@@ -5,7 +5,7 @@ import { UpdateVehicleRestrictionDto } from './dto/update-vehicle-restriction.dt
 
 @Controller('vehicle-restriction')
 export class VehicleRestrictionController {
-  constructor(private readonly vehicleRestrictionService: VehicleRestrictionService) {}
+  constructor(private readonly vehicleRestrictionService: VehicleRestrictionService) { }
 
   @Post()
   create(@Body() createVehicleRestrictionDto: CreateVehicleRestrictionDto) {
@@ -17,18 +17,9 @@ export class VehicleRestrictionController {
     return this.vehicleRestrictionService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.vehicleRestrictionService.findOne(+id);
+  @Get(':licensePlate')
+  findOne(@Param('licensePlate') licensePlate: string) {
+    return this.vehicleRestrictionService.findOne(licensePlate);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateVehicleRestrictionDto: UpdateVehicleRestrictionDto) {
-    return this.vehicleRestrictionService.update(+id, updateVehicleRestrictionDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.vehicleRestrictionService.remove(+id);
-  }
 }
