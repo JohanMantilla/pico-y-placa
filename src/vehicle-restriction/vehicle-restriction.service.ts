@@ -3,19 +3,19 @@ import { CreateVehicleRestrictionDto } from './dto/create-vehicle-restriction.dt
 import { UpdateVehicleRestrictionDto } from './dto/update-vehicle-restriction.dto';
 import { VehicleRestrictionRecord } from './interfaces/vehicle-restriction-record.interface.ts';
 import { DAY_NAMES, RESTRICTED_DIGITS_BY_DAY } from './constants/pico-y-placa.constants';
+import { PicoYPlacaRule } from './domain/pico-y-placa.rule';
 
 @Injectable()
 export class VehicleRestrictionService {
 
   private readonly records: VehicleRestrictionRecord[] = [];
 
+  constructor(private readonly picoYPlacaRule: PicoYPlacaRule) { }
+
+
   create(createVehicleRestrictionDto: CreateVehicleRestrictionDto): VehicleRestrictionRecord {
 
-    const canCirculateVehicle = this.canCirculateVehicle(
-      createVehicleRestrictionDto
-    );
-
-    if (!canCirculateVehicle) {
+    if (!this.picoYPlacaRule.canCirculateVehicle(createVehicleRestrictionDto)) {
       throw new BadRequestException('El vehículo no puede circular debido a la restricción de pico y placa')
     }
 
@@ -52,7 +52,6 @@ export class VehicleRestrictionService {
 
     const restrictedDigits = RESTRICTED_DIGITS_BY_DAY[currentDay];
 
-    // TODO: AQUI se valida la restriccion del día 
     const isRestricted = restrictedDigits.includes(lastDigitAsNumber);
     console.log(isRestricted);
 
