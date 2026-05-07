@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta Vehicular</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <span>Consulta Vehicular</span>
+    </nav>
+
+    <main class="container">
+        <h1>Consulta de Restricción Vehicular</h1>
+
+        <form id="form" class="form-license-plate">
+
+            <div class="field">
+                <label for="licensePlate">Placa vehicular</label>
+                <input type="text" id="licensePlate" placeholder="ABC-1234" maxlength="8" required>
+            </div>
+
+            <div class="field">
+                <label for="date">Fecha</label>
+                <input type="date" id="date" required>
+            </div>
+
+            <div class="field">
+                <label for="time">Hora</label>
+                <input type="time" id="time" required>
+            </div>
+
+            <button type="submit">Consultar</button>
+
+            <p id="loading" style="display:none">Consultando...</p>
+
+            <div id="result" style="display:none">
+                <p id="result-title"></p>
+                <p id="result-sub"></p>
+            </div>
+
+        </form>
+    </main>
+
+    <script src="index.js"></script>
+
+</body>
+
+</html>
